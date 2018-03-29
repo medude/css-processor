@@ -9,10 +9,10 @@ def resolve_directives(tree):
     tree["directives"] = []  # Empty now to append later
 
     for directive in directives:
-        if directive[0] == "import" and len(directive) == 2:
+        if directive["name"] == "import" and len(directive["value"].split(" ")) == 1:
             # It's an import with no media query
             starting_path = os.path.dirname(os.path.abspath(tree["path"]))
-            full_path = os.path.join(starting_path, directive[1][1:][:-1])  # Strip quotes and join paths
+            full_path = os.path.join(starting_path, directive["value"][1:-1])  # Strip quotes and join paths
 
             with open(full_path) as imported_file:
                 data = beautify.strip_whitespace_file(imported_file)

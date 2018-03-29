@@ -1,21 +1,18 @@
-def to_css(tree):
-    selectors = {}
-
-    for rule in tree["rules"]:
-        if not rule["selector"] in selectors:  # Ensure there is a list
-            selectors[rule["selector"]] = {}
-
-        selectors[rule["selector"]][rule["name"]] = rule["value"]
+def to_css(tree, shrink=True):
+    line_ending = "" if shrink else "\n"
+    tab = "" if shrink else "\t"
+    space = "" if shrink else " "
 
     css = ""
 
     for directive in tree["directives"]:
-        css += "@" + " ".join(directive) + ";\n"
+        css += "@" + directive["name"] + " " + directive["value"] + ";" + line_ending
+    css += line_ending
 
-    for selector, rules in selectors.items():
-        css += selector + " {\n"
-        for name, value in rules.items():
-            css += "  " + name + ": " + value + ";\n"
-        css += "}\n"
+    for selector in tree["rules"]:
+        css += selector["selector"] + space + "{" + line_ending
+        for rule in selector["rules"]:
+            css += tab + rule["name"] + ":" + space + rule["value"] + ";" + line_ending
+        css += "}" + line_ending + line_ending
 
     return css

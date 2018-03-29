@@ -1,1 +1,17 @@
-@import"import2.css"screen;div{background-color:#FF6600;width:var(--width);}h1{color:#333333;text-align:center;}:root{--width:calc(10px+20%);}
+@import "import2.css" screen;
+
+div {
+	background-color: #FF6600;
+	width: calc(10px + 20%);
+	height: calc(10px + 20%);
+}
+
+h1 {
+	color: $color;
+	text-align: center;
+}
+
+:root {
+	--color: #333333;
+}
+

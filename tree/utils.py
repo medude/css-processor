@@ -20,15 +20,11 @@ def strip_last_char(string):
 
 def create_rule(key, val, selector):
     return {
-        "name": key,
-        "value": val,
-        "selector": selector
+        "selector": selector,
+        "rules": [
+            {
+                "name": key,
+                "value": val
+            }
+        ]
     }
-
-
-def is_var(key):
-    return key[:1] == "@"
-
-
-def is_const(key):
-    return key[:1] == "$"

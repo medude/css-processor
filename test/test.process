@@ -1,15 +1,15 @@
 @import "import.css";
 @import "import2.css" screen;
 
-$color_const: #333333;
-@width: calc(10px + 20%);
+$color: #333333;
+_width: calc(10px + 20%);
 
 h1 {
-  color: $color_const;
+  color: $color;
   text-align: center;
 }
 
 div {
-  width: @width;
-  height: @width;
+  width: _width;
+  height: _width;
 }

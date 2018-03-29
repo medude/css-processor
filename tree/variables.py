@@ -1,13 +1,32 @@
+import re
+
 from tree.utils import *
+
+var_char = "$"
+const_char = "_"
+
+valid_name_re = re.compile(r"(-|--)?[_a-zA-Z][_a-zA-Z0-9-]*")
+
+
+def is_valid_name(name):
+    return valid_name_re.match(name)
+
+
+def is_var(key):
+    return key[:1] == var_char and is_valid_name(key)
+
+
+def is_const(key):
+    return key[:1] == const_char and is_valid_name(key)
 
 
 def vars_to_rules(tree):
     rules = tree["rules"]
     variables = tree["vars"]
 
-    for name, value in variables.items():
-        new_val = "--" + name[1:]  # Change to CSS variable
-        rules.append(create_rule(new_val, value["value"], value["scope"]))
+    for var in variables:
+        new_val = "--" + var["name"]  # Change to CSS variable
+        rules.append(create_rule(new_val, var["value"], ":root"))
 
     tree["rules"] = rules
     return tree
@@ -16,14 +35,12 @@ def vars_to_rules(tree):
 def change_vars(tree):
     rules = tree["rules"]
 
-    tmp = []
-    for rule in rules:
-        if is_var(rule["value"]):
-            new_val = "var(--" + rule["value"][1:] + ")"  # Change to CSS variable
-            rule["value"] = new_val
-        tmp.append(rule)
+    for selector in rules:
+        for rule in selector["rules"]:
+            if is_var(rule["value"]):
+                new_val = "var(--" + rule["value"][1:] + ")"  # Change to CSS variable
+                rule["value"] = new_val
 
-    tree["rules"] = tmp
     return tree
 
 
@@ -31,11 +48,12 @@ def substitute_constants(tree):
     rules = tree["rules"]
     consts = tree["consts"]
 
-    tmp = []
-    for rule in rules:
-        if is_const(rule["value"]):
-            rule["value"] = consts[rule["value"]]
-        tmp.append(rule)
+    for selector in rules:
+        for rule in selector["rules"]:
+            if is_const(rule["value"]):
+                for const in consts:
+                    if const["name"] == rule["value"][1:]:
+                        rule["value"] = const["value"]
+                        break
 
-    tree["rules"] = tmp
     return tree
